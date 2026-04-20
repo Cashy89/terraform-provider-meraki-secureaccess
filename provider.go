@@ -10,25 +10,47 @@ import (
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			"api_key": {
+			"client_id": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Sensitive:   true,
-				DefaultFunc: schema.EnvDefaultFunc("MERAKI_API_KEY", nil),
-				Description: "API key for Meraki dashboard (can also be set with MERAKI_API_KEY).",
+				DefaultFunc: schema.EnvDefaultFunc("SECURE_ACCESS_CLIENT_ID", nil),
+				Description: "Secure Access API client ID (API key). Can also be set with SECURE_ACCESS_CLIENT_ID.",
+			},
+			"client_secret": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Sensitive:   true,
+				DefaultFunc: schema.EnvDefaultFunc("SECURE_ACCESS_CLIENT_SECRET", nil),
+				Description: "Secure Access API client secret. Can also be set with SECURE_ACCESS_CLIENT_SECRET.",
+			},
+			"organization_id": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("SECURE_ACCESS_ORGANIZATION_ID", nil),
+				Description: "Optional child organization ID for multi-org environments. When set, this value is sent as X-Umbrella-OrgId during token generation.",
 			},
 			"base_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Default:     "https://api.meraki.com/api/v1",
-				Description: "Base URL for Meraki API.",
+				Default:     "https://api.sse.cisco.com/deployments/v2",
+				Description: "Base URL for Secure Access Deployments API.",
+			},
+			"token_url": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Default:     "https://api.sse.cisco.com/auth/v2/token",
+				Description: "OAuth token URL for Secure Access API.",
+			},
+			"scope": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Default:     "",
+				Description: "Optional OAuth scope override for client credentials flow.",
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"hbsecureconnect_secure_connect_site": resourceSecureConnectSite(),
-		},
-		DataSourcesMap: map[string]*schema.Resource{
-			"hbsecureconnect_secure_connect_site": dataSourceSecureConnectSite(),
+			"secureaccessntg_network_tunnel_group": resourceNetworkTunnelGroup(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
@@ -37,9 +59,17 @@ func Provider() *schema.Provider {
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	apiKey := d.Get("api_key").(string)
+	clientID := d.Get("client_id").(string)
+	clientSecret := d.Get("client_secret").(string)
+	orgID := d.Get("organization_id").(string)
 	baseURL := d.Get("base_url").(string)
+	tokenURL := d.Get("token_url").(string)
+	scope := d.Get("scope").(string)
 
-	client := NewClient(apiKey, baseURL)
+	if clientID == "" || clientSecret == "" {
+		return nil, diag.Errorf("provider requires client_id and client_secret (or SECURE_ACCESS_CLIENT_ID and SECURE_ACCESS_CLIENT_SECRET environment variables)")
+	}
+
+	client := NewClient(clientID, clientSecret, orgID, baseURL, tokenURL, scope)
 	return client, diags
 }
