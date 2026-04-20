@@ -1,6 +1,6 @@
 version: 2
 
-project_name: terraform-provider-secureaccessntg
+project_name: terraform-provider-meraki-secureaccess
 
 builds:
   - id: provider
@@ -66,7 +66,7 @@ release:
   # SCM specific config
   github:
     owner: Cashy89
-    name: terraform-provider-secureaccessntg
+    name: terraform-provider-meraki-secureaccess
     # github.* only contains owner/name and other github-specific options,
     # but NOT draft/prerelease (those live at the release: level above).
 

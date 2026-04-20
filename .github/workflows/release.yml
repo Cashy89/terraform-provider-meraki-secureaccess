@@ -22,7 +22,7 @@ jobs:
       - name: Set up Go (for build)
         uses: actions/setup-go@v4
         with:
-          go-version: '1.21' # adjust if you need a different version
+          go-version-file: go.mod
 
       - name: "Debug: goreleaser version (pre-install)"
         run: goreleaser --version || true
