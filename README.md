@@ -1,4 +1,4 @@
-# terraform-provider-secureaccessntg
+# terraform-provider-secureaccess
 
 Terraform provider for Cisco Secure Access Network Tunnel Groups.
 
