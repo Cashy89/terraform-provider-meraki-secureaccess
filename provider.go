@@ -50,7 +50,7 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"secureaccessntg_network_tunnel_group": resourceNetworkTunnelGroup(),
+			"merakisecureaccess_network_tunnel_group": resourceNetworkTunnelGroup(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
