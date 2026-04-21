@@ -1,4 +1,4 @@
-# terraform-provider-meraki-secureaccess
+# terraform-provider-merakisecureaccess
 
 Terraform provider for Cisco Secure Access Network Tunnel Groups.
 
@@ -19,16 +19,16 @@ This provider manages the lifecycle of Network Tunnel Groups using the Secure Ac
 ```hcl
 terraform {
   required_providers {
-    secureaccessntg = {
-      source  = "Cashy89/meraki-secureaccess"
-      version = "~> 0.0"
+    merakisecureaccess = {
+      source  = "local/merakisecureaccess"
+      version = "0.1.0"
     }
   }
 }
 
-provider "secureaccessntg" {
-  key_id        = var.secure_access_key_id
-  key_secret    = var.secure_access_key_secret
+provider "merakisecureaccess" {
+  client_id     = var.secure_access_client_id
+  client_secret = var.secure_access_client_secret
 
   # Optional
   # organization_id = "123456"
@@ -50,7 +50,7 @@ Legacy aliases are still accepted for backward compatibility:
 ## Resource Example
 
 ```hcl
-resource "secureaccessntg_network_tunnel_group" "example" {
+resource "merakisecureaccess_network_tunnel_group" "example" {
   name         = "Branch Tunnel Group"
   region       = "us-east-1"
   device_type  = "ASA"
@@ -73,5 +73,5 @@ resource "secureaccessntg_network_tunnel_group" "example" {
 ## Import
 
 ```bash
-terraform import secureaccessntg_network_tunnel_group.example <network_tunnel_group_id>
+terraform import merakisecureaccess_network_tunnel_group.example <network_tunnel_group_id>
 ```

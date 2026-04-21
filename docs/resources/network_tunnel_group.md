@@ -1,11 +1,11 @@
-# secureaccessntg_network_tunnel_group Resource
+# merakisecureaccess_network_tunnel_group Resource
 
 Creates and manages a Cisco Secure Access Network Tunnel Group.
 
 ## Example Usage
 
 ```hcl
-resource "secureaccessntg_network_tunnel_group" "example" {
+resource "merakisecureaccess_network_tunnel_group" "example" {
   name           = "Branch Tunnel Group"
   region         = "us-east-1"
   device_type    = "ASA"
@@ -56,5 +56,5 @@ In addition to all arguments above, the following attributes are exported:
 Import using the Network Tunnel Group ID:
 
 ```bash
-terraform import secureaccessntg_network_tunnel_group.example <network_tunnel_group_id>
+terraform import merakisecureaccess_network_tunnel_group.example <network_tunnel_group_id>
 ```
