@@ -1,4 +1,4 @@
-# terraform-provider-secureaccess
+# terraform-provider-meraki-secureaccess
 
 Terraform provider for Cisco Secure Access Network Tunnel Groups.
 
@@ -12,7 +12,7 @@ This provider manages the lifecycle of Network Tunnel Groups using the Secure Ac
 
 - Terraform >= 1.0
 - Go >= 1.22 (for local builds)
-- Secure Access API credentials (client ID and client secret)
+- Secure Access API credentials (key ID and key secret)
 
 ## Provider Configuration
 
@@ -20,15 +20,15 @@ This provider manages the lifecycle of Network Tunnel Groups using the Secure Ac
 terraform {
   required_providers {
     secureaccessntg = {
-      source  = "local/secureaccessntg"
-      version = "0.1.0"
+      source  = "Cashy89/meraki-secureaccess"
+      version = "~> 0.0"
     }
   }
 }
 
 provider "secureaccessntg" {
-  client_id     = var.secure_access_client_id
-  client_secret = var.secure_access_client_secret
+  key_id        = var.secure_access_key_id
+  key_secret    = var.secure_access_key_secret
 
   # Optional
   # organization_id = "123456"
@@ -39,9 +39,13 @@ provider "secureaccessntg" {
 ```
 
 Environment variables are also supported:
-- `SECURE_ACCESS_CLIENT_ID`
-- `SECURE_ACCESS_CLIENT_SECRET`
+- `CISCOSECUREACCESS_KEY_ID`
+- `CISCOSECUREACCESS_KEY_SECRET`
 - `SECURE_ACCESS_ORGANIZATION_ID`
+
+Legacy aliases are still accepted for backward compatibility:
+- `client_id` / `client_secret` provider arguments
+- `SECURE_ACCESS_CLIENT_ID` / `SECURE_ACCESS_CLIENT_SECRET` environment variables
 
 ## Resource Example
 
