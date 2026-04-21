@@ -12,7 +12,7 @@ This provider manages the lifecycle of Network Tunnel Groups using the Secure Ac
 
 - Terraform >= 1.0
 - Go >= 1.22 (for local builds)
-- Secure Access API credentials (client ID and client secret)
+- Secure Access API credentials (key ID and key secret)
 
 ## Provider Configuration
 
@@ -39,9 +39,13 @@ provider "merakisecureaccess" {
 ```
 
 Environment variables are also supported:
-- `SECURE_ACCESS_CLIENT_ID`
-- `SECURE_ACCESS_CLIENT_SECRET`
+- `CISCOSECUREACCESS_KEY_ID`
+- `CISCOSECUREACCESS_KEY_SECRET`
 - `SECURE_ACCESS_ORGANIZATION_ID`
+
+Legacy aliases are still accepted for backward compatibility:
+- `client_id` / `client_secret` provider arguments
+- `SECURE_ACCESS_CLIENT_ID` / `SECURE_ACCESS_CLIENT_SECRET` environment variables
 
 ## Resource Example
 

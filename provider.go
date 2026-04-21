@@ -10,19 +10,35 @@ import (
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
+			"key_id": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Sensitive:   true,
+				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"CISCOSECUREACCESS_KEY_ID", "SECURE_ACCESS_CLIENT_ID"}, nil),
+				Description: "Secure Access API key ID. Can also be set with CISCOSECUREACCESS_KEY_ID.",
+			},
+			"key_secret": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Sensitive:   true,
+				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"CISCOSECUREACCESS_KEY_SECRET", "SECURE_ACCESS_CLIENT_SECRET"}, nil),
+				Description: "Secure Access API key secret. Can also be set with CISCOSECUREACCESS_KEY_SECRET.",
+			},
 			"client_id": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Sensitive:   true,
 				DefaultFunc: schema.EnvDefaultFunc("SECURE_ACCESS_CLIENT_ID", nil),
-				Description: "Secure Access API client ID (API key). Can also be set with SECURE_ACCESS_CLIENT_ID.",
+				Description: "Deprecated. Use key_id instead.",
+				Deprecated:  "Use key_id instead of client_id.",
 			},
 			"client_secret": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Sensitive:   true,
 				DefaultFunc: schema.EnvDefaultFunc("SECURE_ACCESS_CLIENT_SECRET", nil),
-				Description: "Secure Access API client secret. Can also be set with SECURE_ACCESS_CLIENT_SECRET.",
+				Description: "Deprecated. Use key_secret instead.",
+				Deprecated:  "Use key_secret instead of client_secret.",
 			},
 			"organization_id": {
 				Type:        schema.TypeString,
@@ -59,17 +75,23 @@ func Provider() *schema.Provider {
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	clientID := d.Get("client_id").(string)
-	clientSecret := d.Get("client_secret").(string)
+	keyID := d.Get("key_id").(string)
+	keySecret := d.Get("key_secret").(string)
+	if keyID == "" {
+		keyID = d.Get("client_id").(string)
+	}
+	if keySecret == "" {
+		keySecret = d.Get("client_secret").(string)
+	}
 	orgID := d.Get("organization_id").(string)
 	baseURL := d.Get("base_url").(string)
 	tokenURL := d.Get("token_url").(string)
 	scope := d.Get("scope").(string)
 
-	if clientID == "" || clientSecret == "" {
-		return nil, diag.Errorf("provider requires client_id and client_secret (or SECURE_ACCESS_CLIENT_ID and SECURE_ACCESS_CLIENT_SECRET environment variables)")
+	if keyID == "" || keySecret == "" {
+		return nil, diag.Errorf("provider requires key_id and key_secret (or CISCOSECUREACCESS_KEY_ID and CISCOSECUREACCESS_KEY_SECRET environment variables)")
 	}
 
-	client := NewClient(clientID, clientSecret, orgID, baseURL, tokenURL, scope)
+	client := NewClient(keyID, keySecret, orgID, baseURL, tokenURL, scope)
 	return client, diags
 }

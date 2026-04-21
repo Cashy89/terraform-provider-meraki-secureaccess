@@ -34,3 +34,13 @@ provider "merakisecureaccess" {
 - `base_url` - (Optional) Base URL for the Secure Access Deployments API. Defaults to `https://api.sse.cisco.com/deployments/v2`.
 - `token_url` - (Optional) OAuth token URL. Defaults to `https://api.sse.cisco.com/auth/v2/token`.
 - `scope` - (Optional) OAuth scope override for client credentials flow.
+
+## Environment Variables
+
+- `CISCOSECUREACCESS_KEY_ID`
+- `CISCOSECUREACCESS_KEY_SECRET`
+- `SECURE_ACCESS_ORGANIZATION_ID`
+
+Legacy variables are also supported:
+- `SECURE_ACCESS_CLIENT_ID` (deprecated alias for `key_id`)
+- `SECURE_ACCESS_CLIENT_SECRET` (deprecated alias for `key_secret`)
