@@ -9,7 +9,7 @@ terraform {
   required_providers {
     merakisecureaccess = {
       source  = "Cashy89/meraki-secureaccess"
-      version = "~> 0.0"
+      version = "0.0.6"
     }
   }
 }
