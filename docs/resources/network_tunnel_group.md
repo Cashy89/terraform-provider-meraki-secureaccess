@@ -48,8 +48,30 @@ In addition to all arguments above, the following attributes are exported:
 - `id` - Network Tunnel Group ID.
 - `organization_id` - Organization ID returned by Secure Access.
 - `status` - Current tunnel group status.
+- `hubs` - Hubs returned for the Network Tunnel Group, including data center, authentication ID, hub status, and tunnel count details.
 - `created_at` - API timestamp when the tunnel group was created.
 - `modified_at` - API timestamp when the tunnel group was last modified.
+
+The `routing` block is also populated from the API response, so BGP and static routing values returned by Secure Access are available in state.
+
+### `hubs` block
+
+- `id` - Network Tunnel Hub ID.
+- `is_primary` - Whether this hub is the primary data center.
+- `datacenter` - Data center details for the hub.
+- `auth_id` - Authentication ID used by the hub.
+- `status` - Current hub status details.
+- `tunnels_count` - Number of tunnels in the hub.
+
+### `hubs.datacenter` block
+
+- `name` - Name of the data center for the hub.
+- `ip` - IP address of the data center for the hub.
+
+### `hubs.status` block
+
+- `time` - Timestamp for the hub status event.
+- `status` - High-level hub status.
 
 ## Import
 

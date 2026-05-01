@@ -128,6 +128,73 @@ func resourceNetworkTunnelGroup() *schema.Resource {
 				Computed:    true,
 				Description: "Status of the Network Tunnel Group.",
 			},
+			"hubs": {
+				Type:        schema.TypeList,
+				Computed:    true,
+				Description: "Hubs returned for the Network Tunnel Group, including data center, authentication ID, status, and tunnel count details.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:        schema.TypeString,
+							Computed:    true,
+							Description: "ID of the Network Tunnel Hub.",
+						},
+						"is_primary": {
+							Type:        schema.TypeBool,
+							Computed:    true,
+							Description: "Whether this hub is the primary data center.",
+						},
+						"datacenter": {
+							Type:        schema.TypeList,
+							Computed:    true,
+							Description: "Data center associated with the hub.",
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"name": {
+										Type:        schema.TypeString,
+										Computed:    true,
+										Description: "Name of the data center for the hub.",
+									},
+									"ip": {
+										Type:        schema.TypeString,
+										Computed:    true,
+										Description: "IP address of the data center for the hub.",
+									},
+								},
+							},
+						},
+						"auth_id": {
+							Type:        schema.TypeString,
+							Computed:    true,
+							Description: "Authentication ID used by the hub.",
+						},
+						"status": {
+							Type:        schema.TypeList,
+							Computed:    true,
+							Description: "Current hub status details.",
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"time": {
+										Type:        schema.TypeString,
+										Computed:    true,
+										Description: "Timestamp for the hub status event.",
+									},
+									"status": {
+										Type:        schema.TypeString,
+										Computed:    true,
+										Description: "High-level hub status.",
+									},
+								},
+							},
+						},
+						"tunnels_count": {
+							Type:        schema.TypeInt,
+							Computed:    true,
+							Description: "Number of tunnels in the hub.",
+						},
+					},
+				},
+			},
 			"created_at": {
 				Type:        schema.TypeString,
 				Computed:    true,
@@ -330,6 +397,9 @@ func setStateFromNetworkTunnelGroup(d *schema.ResourceData, group *networkTunnel
 	if err := d.Set("status", group.Status); err != nil {
 		return err
 	}
+	if err := d.Set("hubs", flattenHubs(group.Hubs)); err != nil {
+		return err
+	}
 	if err := d.Set("created_at", group.CreatedAt); err != nil {
 		return err
 	}
@@ -341,6 +411,52 @@ func setStateFromNetworkTunnelGroup(d *schema.ResourceData, group *networkTunnel
 	}
 
 	return nil
+}
+
+func flattenHubs(hubs []networkTunnelHub) []interface{} {
+	if len(hubs) == 0 {
+		return nil
+	}
+
+	result := make([]interface{}, 0, len(hubs))
+	for _, hub := range hubs {
+		result = append(result, map[string]interface{}{
+			"id":            formatID(hub.ID),
+			"is_primary":    hub.IsPrimary,
+			"datacenter":    flattenHubDatacenter(hub.Datacenter),
+			"auth_id":       hub.AuthID,
+			"status":        flattenHubStatus(hub.Status),
+			"tunnels_count": hub.TunnelsCount,
+		})
+	}
+
+	return result
+}
+
+func flattenHubDatacenter(datacenter networkTunnelDatacenter) []interface{} {
+	if datacenter.Name == "" && datacenter.IP == "" {
+		return nil
+	}
+
+	return []interface{}{
+		map[string]interface{}{
+			"name": datacenter.Name,
+			"ip":   datacenter.IP,
+		},
+	}
+}
+
+func flattenHubStatus(status *networkTunnelHubStatus) []interface{} {
+	if status == nil {
+		return nil
+	}
+
+	return []interface{}{
+		map[string]interface{}{
+			"time":   status.Time,
+			"status": status.Status,
+		},
+	}
 }
 
 func flattenRouting(r *routingResponse) []interface{} {

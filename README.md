@@ -70,6 +70,10 @@ resource "merakisecureaccess_network_tunnel_group" "example" {
 - `static`: set `network_cidrs`.
 - `bgp`: set `as_number`, optionally `bgp_hop_count`, `bgp_neighbor_cidrs`, and `bgp_server_subnets`.
 
+## Exported Hub Details
+
+The `merakisecureaccess_network_tunnel_group` resource exports the API-returned `hubs` block, including each hub's ID, primary/secondary flag, data center name/IP, auth ID, hub status, and `tunnels_count`.
+
 ## Import
 
 ```bash

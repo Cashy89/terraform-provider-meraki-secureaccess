@@ -199,15 +199,35 @@ type patchOperation struct {
 }
 
 type networkTunnelGroup struct {
-	ID             int64            `json:"id"`
-	Name           string           `json:"name"`
-	OrganizationID int64            `json:"organizationId"`
-	DeviceType     string           `json:"deviceType"`
-	Region         string           `json:"region"`
-	Status         string           `json:"status"`
-	Routing        *routingResponse `json:"routing"`
-	CreatedAt      string           `json:"createdAt"`
-	ModifiedAt     string           `json:"modifiedAt"`
+	ID             int64              `json:"id"`
+	Name           string             `json:"name"`
+	OrganizationID int64              `json:"organizationId"`
+	DeviceType     string             `json:"deviceType"`
+	Region         string             `json:"region"`
+	Status         string             `json:"status"`
+	Hubs           []networkTunnelHub `json:"hubs"`
+	Routing        *routingResponse   `json:"routing"`
+	CreatedAt      string             `json:"createdAt"`
+	ModifiedAt     string             `json:"modifiedAt"`
+}
+
+type networkTunnelHub struct {
+	ID           int64                   `json:"id"`
+	IsPrimary    bool                    `json:"isPrimary"`
+	Datacenter   networkTunnelDatacenter `json:"datacenter"`
+	AuthID       string                  `json:"authId"`
+	Status       *networkTunnelHubStatus `json:"status"`
+	TunnelsCount int                     `json:"tunnelsCount"`
+}
+
+type networkTunnelDatacenter struct {
+	Name string `json:"name"`
+	IP   string `json:"ip"`
+}
+
+type networkTunnelHubStatus struct {
+	Time   string `json:"time"`
+	Status string `json:"status"`
 }
 
 type routingResponse struct {
