@@ -54,6 +54,7 @@ release:
   draft: false            # <-- moved here (release-level)
   replace_existing_draft: false
   use_existing_draft: false
+  replace_existing_artifacts: true
   prerelease: auto        # true/false/auto - set as you need
   make_latest: true
   mode: append
